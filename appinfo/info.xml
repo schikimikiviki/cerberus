@@ -14,6 +14,7 @@
 	<dependencies>
 		<nextcloud min-version="29" max-version="31"/>
 	</dependencies>
+	<bootstrap>OCA\Cerberus\AppInfo\Application</bootstrap>
 	<navigations>
 		<navigation>
 			<id>cerberus</id>
