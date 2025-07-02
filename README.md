@@ -40,3 +40,15 @@ docker volume inspect cerberus_cerberus_nextcloud
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/hello"
 ```
+
+4. You can then upload a file and check its permissions using:
+
+```
+http://localhost:8089/apps/cerberus/check-permission/screenshot.png
+```
+
+or curl:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/check-permission/screenshot.png"
+```

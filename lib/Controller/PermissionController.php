@@ -20,42 +20,65 @@ class PermissionController extends Controller {
         $this->userSession = $userSession;
     }
 
-    /**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     */
-    public function checkPermissions(string $fileName): DataResponse {
-        $fileName = urldecode($fileName);
-        $fileName = ltrim($fileName, '/');
-        
-        $user = $this->userSession->getUser();
-        if (!$user) {
-            return new DataResponse(['error' => 'User not authenticated'], 401);
-        }
+ /**
+ * @NoAdminRequired
+ * @NoCSRFRequired
+ */
+public function checkPermissions(string $fileName): DataResponse {
+    $fileName = urldecode($fileName);
+    $fileName = ltrim($fileName, '/');
     
-        $userFolder = $this->rootFolder->getUserFolder($user->getUID());
-        
-        try {
-            if (!$userFolder->nodeExists($fileName)) {
-                return new DataResponse(['error' => 'File not found'], 404);
-            }
-    
-            $file = $userFolder->get($fileName);
-            $ncPerms = $file->getPermissions();
-            
-            // Convert Nextcloud permissions to Unix-style
-            $unixPerms = $this->convertToUnixPermissions($ncPerms);
-            
-            return new DataResponse([
-                'file' => $fileName,
-                'nextcloud_permissions' => $ncPerms,
-                'unix_permissions' => $unixPerms,
-                'permissions_octal' => decoct($unixPerms) // Shows as 0644
-            ]);
-        } catch (\Exception $e) {
-            return new DataResponse(['error' => $e->getMessage()], 500);
-        }
+    $user = $this->userSession->getUser();
+    if (!$user) {
+        return new DataResponse(['error' => 'User not authenticated'], 401);
     }
+
+    $userFolder = $this->rootFolder->getUserFolder($user->getUID());
+    
+    try {
+        if (!$userFolder->nodeExists($fileName)) {
+            return new DataResponse(['error' => 'File not found'], 404);
+        }
+
+        $file = $userFolder->get($fileName);
+        $ncPerms = $file->getPermissions();
+        
+        // real file information
+        $storage = $file->getStorage();
+        $internalPath = $file->getInternalPath();
+        $absolutePath = $storage->getLocalFile($internalPath);
+        
+        
+        // unix file info
+        $fileOwner = posix_getpwuid(fileowner($absolutePath));
+        $fileGroup = posix_getgrgid(filegroup($absolutePath));
+        $unixPerms = fileperms($absolutePath) & 0777;
+
+        // also add the host path 
+        // this depends on dockers path as seen in "docker volume inspect"
+        $hostBasePath = '/var/lib/docker/volumes/cerberus_cerberus_nextcloud/_data';
+        $containerBasePath = '/var/www/html';
+        $hostPath = str_replace($containerBasePath, $hostBasePath, $absolutePath);
+        
+        return new DataResponse([
+            'file' => $fileName,
+            'path' => $userFolder->getPath() . '/' . $fileName,
+            'storage_path' => $absolutePath,
+            'path_on_host' => $hostPath,
+            'nextcloud_permissions' => $ncPerms,
+            'unix_permissions' => $unixPerms,
+            'permissions_octal' => decoct($unixPerms),
+            'file_owner' => $fileOwner['name'] ?? 'unknown',
+            'file_group' => $fileGroup['name'] ?? 'unknown',
+            'real_permissions' => substr(sprintf('%o', fileperms($absolutePath)), -4)
+        ]);
+    } catch (\Exception $e) {
+        return new DataResponse([
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+}
 
 
 /**
