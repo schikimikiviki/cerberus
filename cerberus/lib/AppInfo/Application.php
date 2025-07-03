@@ -43,12 +43,9 @@ class Application extends App implements IBootstrap {
 			);
 		});
 		
-		// Register routes
-		$context->registerRoute('test.hello', '/hello', [
-			'_controller' => 'TestController#hello',
-			'_action' => 'hello',
-			'_verb' => 'GET'
-		]);
+	
+
+	
 	}
 
 	public function boot(IBootContext $context): void {

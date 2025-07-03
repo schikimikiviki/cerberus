@@ -42,13 +42,15 @@ sudo bash startup.sh
 
 3. You can access nextcloud at: http://localhost:8089/
 
-4. You can test curling messages:
+4. Before you can curl anything, you need to activate the app. Log in into nextcloud, click on your profile icon at the top right corner and select "Apps". Then, on the left side, select "your apps" and you should see "cerberus". Click on "enable":
+
+5. You can test curling messages:
 
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/hello"
 ```
 
-5. You can then upload a file and check its permissions using:
+6. You can then upload a file and check its permissions using:
 
 ```
 http://localhost:8089/apps/cerberus/check-permission/screenshot.png

@@ -13,6 +13,11 @@ return [
             'name' => 'permission#listFiles',
             'url' => '/list-files',
             'verb' => 'GET'
-        ]
+        ], 
+        [
+            'name' => 'test#hello',
+            'url' => '/hello',
+            'verb' => 'GET'
+        ],
     ]
 ];
