@@ -33,15 +33,22 @@ You can inspect the files using:
 docker volume inspect cerberus_cerberus_nextcloud
 ```
 
-2. You can access nextcloud at: http://localhost:8089/
+2. Make the startup script executable and execute it with sudo:
 
-3. You can test curling messages:
+```
+chmod +x startup.sh
+sudo bash startup.sh
+```
+
+3. You can access nextcloud at: http://localhost:8089/
+
+4. You can test curling messages:
 
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/hello"
 ```
 
-4. You can then upload a file and check its permissions using:
+5. You can then upload a file and check its permissions using:
 
 ```
 http://localhost:8089/apps/cerberus/check-permission/screenshot.png
