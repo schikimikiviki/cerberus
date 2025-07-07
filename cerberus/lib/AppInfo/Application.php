@@ -15,6 +15,7 @@ use OCP\Files\IRootFolder;
 use OCP\IUserSession;
 
 use OCA\Cerberus\Controller\TestController;
+use OCA\Cerberus\Controller\UserController;
 
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'cerberus';
@@ -42,6 +43,17 @@ class Application extends App implements IBootstrap {
 				$c->query(IRequest::class)
 			);
 		});
+
+		$context->registerService('UserController', function($c) {
+			return new UserController(
+				self::APP_ID,
+				$c->query(IRequest::class),
+				$c->query(IRootFolder::class),
+				$c->query(IUserSession::class),
+				$c->query(\OCP\IDBConnection::class) 
+			);
+		});
+		
 		
 	
 

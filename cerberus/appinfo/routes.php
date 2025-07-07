@@ -19,5 +19,10 @@ return [
             'url' => '/hello',
             'verb' => 'GET'
         ],
+        [
+            'name' => 'user#getUsers',
+            'url' => '/users',
+            'verb' => 'GET'
+        ],
     ]
 ];

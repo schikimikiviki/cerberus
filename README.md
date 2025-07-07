@@ -61,3 +61,9 @@ or curl:
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/check-permission/screenshot.png"
 ```
+
+7. You can check users with: 
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/users"
+```
