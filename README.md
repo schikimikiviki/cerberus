@@ -62,8 +62,28 @@ or curl:
 curl -u admin:admin "http://localhost:8089/apps/cerberus/check-permission/screenshot.png"
 ```
 
-7. You can check users with: 
+7. You can check users with:
 
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/users"
+```
+
+8. Log into the db with:
+
+```
+docker exec -it cerberus-db-1 mysql -u nextcloud -p nextcloud
+```
+
+9. Use the /permissions route:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/permissions/file?path=files/Nextcloud.png"
+```
+
+Attention: In order for this to work you must first share that file. If this is done, you will get a result back.
+
+The second one is:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/permissions/group?mount_point=xyz"
 ```

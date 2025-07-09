@@ -43,6 +43,7 @@ public function getUsers(): DataResponse {
     }
 
     try {
+        // während der runtime wird das prefix mit irgendwas von nextcloud replaced
         $stmt = $this->db->prepare('SELECT uid FROM `*PREFIX*users`');
         $result = $stmt->execute();
         $users = [];

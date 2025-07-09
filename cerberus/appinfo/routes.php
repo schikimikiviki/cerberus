@@ -24,5 +24,15 @@ return [
             'url' => '/users',
             'verb' => 'GET'
         ],
+        [
+            'name' => 'file#getFile',
+            'url' => '/permissions/file',
+            'verb' => 'GET'
+        ],
+        [
+            'name' => 'file#getGroup',
+            'url' => '/permissions/group',
+            'verb' => 'GET'
+        ],
     ]
 ];
