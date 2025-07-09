@@ -85,5 +85,5 @@ Attention: In order for this to work you must first share that file. If this is 
 The second one is:
 
 ```
-curl -u admin:admin "http://localhost:8089/apps/cerberus/permissions/group?mount_point=xyz"
+curl -u admin:admin "http://localhost:8089/apps/cerberus/permissions/group?mount_point=test"
 ```

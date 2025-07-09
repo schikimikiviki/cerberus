@@ -86,6 +86,12 @@ public function getGroup(): DataResponse {
         return new DataResponse(['error' => 'Access denied'], 403);
     }
 
+    // check if the table exists first
+    if (!$this->tableExists('oc_group_folders')) {
+        return new DataResponse(['result' => []]);
+    }
+    
+
     try {
         $mount_point = $this->request->getParam('mount_point', '');
        
@@ -131,6 +137,30 @@ public function getGroup(): DataResponse {
 //         'path' => $this->request->getParam('path', '')
 //     ]);
 // }
+
+private function tableExists(string $tableName): bool {
+    try {
+        // Different database types might need different queries
+        $platform = $this->db->getDatabasePlatform();
+        
+        
+            // MySQL/MariaDB
+            $sql = "SELECT TABLE_NAME 
+                    FROM INFORMATION_SCHEMA.TABLES 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = ?";
+        } 
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$tableName]);
+        
+        return (bool) $stmt->fetch();
+    } catch (\Exception $e) {
+        // Log error if needed
+        // error_log('Error checking table existence: ' . $e->getMessage());
+        return false;
+    }
+}
 
 
 
