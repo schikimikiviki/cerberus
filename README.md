@@ -4,6 +4,8 @@ Nextcloud plugin that alows to GET the file permissions and file ownerships for 
 
 ## Usage
 
+0. Log in as sudo, otherwise the app might not be there on startup.
+
 1. Start the docker container using
 
 ```
