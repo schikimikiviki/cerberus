@@ -144,18 +144,20 @@ private function tableExists(string $tableName): bool {
         $platform = $this->db->getDatabasePlatform();
         
         
-            // MySQL/MariaDB
-            $sql = "SELECT TABLE_NAME 
-                    FROM INFORMATION_SCHEMA.TABLES 
-                    WHERE TABLE_SCHEMA = DATABASE() 
-                    AND TABLE_NAME = ?";
-        } 
-        
+        // MySQL/MariaDB
+        $sql = "SELECT TABLE_NAME 
+                FROM INFORMATION_SCHEMA.TABLES 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = ?";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$tableName]);
         
         return (bool) $stmt->fetch();
-    } catch (\Exception $e) {
+        } 
+        
+       
+     catch (\Exception $e) {
         // Log error if needed
         // error_log('Error checking table existence: ' . $e->getMessage());
         return false;
@@ -163,6 +165,5 @@ private function tableExists(string $tableName): bool {
 }
 
 
-
-
 }
+
