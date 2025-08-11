@@ -38,7 +38,7 @@ public function __construct(string $AppName,
  */
 public function getUsers(): DataResponse {
     $currentUser = $this->userSession->getUser();
-    if (!$currentUser || $currentUser->getUID() !== 'admin') {
+    if (!$currentUser || $currentUser->getUID() !== 'root') {
         return new DataResponse(['error' => 'Access denied'], 403);
     }
 

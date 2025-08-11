@@ -2,7 +2,48 @@
 
 Nextcloud plugin that alows to GET the file permissions and file ownerships for files.
 
-## Usage
+## Usage - general
+
+1. Start your own docker container or nextcloud instance. When using docker, you need to find the directory that nextcloud uses. It will be something like /srv/nextcloud/data/nextcloud/custom_apps - it is important that you clone the cerberus app to the "custom_apps" folder.
+
+2. Once you cloned the repo, make sure it has the right permissions for www-data:
+
+```
+sudo chown -R www-data:www-data srv/nextcloud/data/nextcloud/custom_apps/cerberus
+sudo chmod -R 755 srv/nextcloud/data/nextcloud/custom_apps
+```
+
+3. Important: The repo contains the a subfolder called "cerberus" - this is where the actual plugin is. You need to copy it to "custom_apps" folder.
+
+```
+ cp -r cerberus/ ../
+```
+
+After doing this, go to the nextcloud GUI and log in. Click on your profile in the upper right corner and on "Apps" and "Your apps". You should now see "enable" next to cerberus when you scroll down. Once its enabled, you will see a cloud icon in the upper bar. When you click on it, there is just a blue screen.
+
+4. Test routes:
+
+To test the first route, you need to "share" an image with somebody. In the nextcloud GUI, go to "Files", check a file and then click on the share icon. Share the file with somebody, now it appears in "Shares". You can now test the first curl:
+
+```
+curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file?path=files/Nextcloud.png"
+```
+
+The second route is for group access. You need to first create a group and add users to that group. You can do this in the nextcloud gui in your Profile in "Accounts". You can then also share files across that group.
+
+Now, you need to enable the "group folders" extension in nextcloud. You can do this in the docker container with:
+
+```
+php occ app:enable groupfolders
+```
+
+Or alternatively via nextcloud gui. Then, click on your profile > Administration settings > Team folders and create a new folder "test". You can then add the group you created before. Then the second curl should be possible:
+
+```
+curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group?mount_point=test"
+```
+
+## Usage - in a docker container
 
 0. Log in as sudo, otherwise the app might not be there on startup.
 

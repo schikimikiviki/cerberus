@@ -33,7 +33,7 @@ public function getFile(): DataResponse {
 
     // only let admin fetch
     $currentUser = $this->userSession->getUser();
-    if (!$currentUser || $currentUser->getUID() !== 'admin') {
+    if (!$currentUser || $currentUser->getUID() !== 'root') {
         return new DataResponse(['error' => 'Access denied'], 403);
     }
 
@@ -82,7 +82,7 @@ public function getGroup(): DataResponse {
 
     // only let admin fetch
     $currentUser = $this->userSession->getUser();
-    if (!$currentUser || $currentUser->getUID() !== 'admin') {
+    if (!$currentUser || $currentUser->getUID() !== 'root') {
         return new DataResponse(['error' => 'Access denied'], 403);
     }
 
