@@ -23,11 +23,15 @@ After doing this, go to the nextcloud GUI and log in. Click on your profile in t
 
 4. Test routes:
 
+a) File permission route
+
 To test the first route, you need to "share" an image with somebody. In the nextcloud GUI, go to "Files", check a file and then click on the share icon. Share the file with somebody, now it appears in "Shares". You can now test the first curl:
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file?path=files/Nextcloud.png"
 ```
+
+b) Group folders route
 
 The second route is for group access. You need to first create a group and add users to that group. You can do this in the nextcloud gui in your Profile in "Accounts". You can then also share files across that group.
 
@@ -41,6 +45,26 @@ Or alternatively via nextcloud gui. Then, click on your profile > Administration
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group?mount_point=test"
+```
+
+c) Available users route
+
+You can also check what users are available in nextcloud using:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/users/all"
+```
+
+This returns a list of all users and all groups together. To fetch only the users:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/users/user-list"
+```
+
+and to fetch only the groups:
+
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/users/group-list"
 ```
 
 ## Usage - in a docker container

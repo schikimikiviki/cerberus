@@ -17,47 +17,46 @@ use OCA\Cerberus\Controller\TestController;
 use OCA\Cerberus\Controller\UserController;
 use OCA\Cerberus\Controller\FileController;
 
-class Application extends App implements IBootstrap {
+class Application extends App implements IBootstrap
+{
 	public const APP_ID = 'cerberus';
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct(self::APP_ID);
 	}
 
-	public function register(IRegistrationContext $context): void {
+	public function register(IRegistrationContext $context): void
+	{
 		$container = $this->getContainer();
-		
-		
-		$context->registerService('TestController', function($c) {
+
+
+		$context->registerService('TestController', function ($c) {
 			return new TestController(
 				self::APP_ID,
 				$c->query(IRequest::class)
 			);
 		});
 
-		$context->registerService('UserController', function($c) {
+		$context->registerService('UserController', function ($c) {
 			return new UserController(
 				self::APP_ID,
 				$c->query(IRequest::class),
-				$c->query(IRootFolder::class),
 				$c->query(IUserSession::class),
-				$c->query(\OCP\IDBConnection::class) 
+				$c->query(\OCP\IDBConnection::class)
 			);
 		});
 
-		$context->registerService('FileController', function($c) {
+		$context->registerService('FileController', function ($c) {
 			return new FileController(
 				self::APP_ID,
 				$c->query(IRequest::class),
 				$c->query(IRootFolder::class),
 				$c->query(IUserSession::class),
-				$c->query(\OCP\IDBConnection::class) 
+				$c->query(\OCP\IDBConnection::class)
 			);
 		});
-
-	
 	}
 
-	public function boot(IBootContext $context): void {
-	}
+	public function boot(IBootContext $context): void {}
 }
