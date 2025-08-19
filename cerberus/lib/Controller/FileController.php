@@ -131,12 +131,6 @@ public function getGroup(): DataResponse {
     }
 }
 
-// public function getPermissions(): DataResponse {
-//     return new DataResponse([
-//         'success' => true,
-//         'path' => $this->request->getParam('path', '')
-//     ]);
-// }
 
 private function tableExists(string $tableName): bool {
     try {

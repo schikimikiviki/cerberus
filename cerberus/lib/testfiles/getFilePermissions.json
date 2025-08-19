@@ -1,0 +1,44 @@
+{
+  "result": [
+    {
+      "id": 1,
+      "item_type": "file",
+      "share_type": 0,
+      "share_with": "user1",
+      "uid_owner": "root",
+      "file_source": 3,
+      "permissions": 19,
+      "path": "files/Nextcloud.png"
+    },
+    {
+      "id": 2,
+      "item_type": "file",
+      "share_type": 1,
+      "share_with": "test group",
+      "uid_owner": "root",
+      "file_source": 3,
+      "permissions": 19,
+      "path": "files/Nextcloud.png"
+    },
+    {
+      "id": 3,
+      "item_type": "file",
+      "share_type": 2,
+      "share_with": "user1",
+      "uid_owner": "root",
+      "file_source": 3,
+      "permissions": 19,
+      "path": "files/Nextcloud.png"
+    },
+    {
+      "id": 4,
+      "item_type": "file",
+      "share_type": 2,
+      "share_with": "user2",
+      "uid_owner": "root",
+      "file_source": 3,
+      "permissions": 19,
+      "path": "files/Nextcloud.png"
+    }
+  ]
+}

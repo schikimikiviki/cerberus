@@ -20,8 +20,18 @@ return [
             'verb' => 'GET'
         ],
         [
+            'name' => 'user#getUsersAndGroups',
+            'url' => '/users/all',
+            'verb' => 'GET'
+        ],
+        [
             'name' => 'user#getUsers',
-            'url' => '/users',
+            'url' => '/users/user-list',
+            'verb' => 'GET'
+        ],
+        [
+            'name' => 'user#getGroups',
+            'url' => '/users/group-list',
             'verb' => 'GET'
         ],
         [
@@ -33,6 +43,6 @@ return [
             'name' => 'file#getGroup',
             'url' => '/permissions/group',
             'verb' => 'GET'
-        ],
+        ]
     ]
 ];
