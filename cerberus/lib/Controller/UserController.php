@@ -30,7 +30,7 @@ class UserController extends Controller
     public function getUsersAndGroups(): DataResponse
     {
         $currentUser = $this->userSession->getUser();
-        if (!$currentUser || $currentUser->getUID() !== 'admin') {
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
             return new DataResponse(['error' => 'Access denied'], 403);
         }
 
@@ -57,7 +57,7 @@ class UserController extends Controller
     public function getUsers(): DataResponse
     {
         $currentUser = $this->userSession->getUser();
-        if (!$currentUser || $currentUser->getUID() !== 'admin') {
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
             return new DataResponse(['error' => 'Access denied'], 403);
         }
 
@@ -84,7 +84,7 @@ class UserController extends Controller
     public function getGroups(): DataResponse
     {
         $currentUser = $this->userSession->getUser();
-        if (!$currentUser || $currentUser->getUID() !== 'admin') {
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
             return new DataResponse(['error' => 'Access denied'], 403);
         }
 
