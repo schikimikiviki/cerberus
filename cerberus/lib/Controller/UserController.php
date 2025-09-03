@@ -102,4 +102,40 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function getGroupsOfASpecificUser(): DataResponse
+    {
+        $currentUser = $this->userSession->getUser();
+        if (!$currentUser || $currentUser->getUID() !== 'admin') {
+            return new DataResponse(['error' => 'Access denied'], 403);
+        }
+
+        try {
+
+            $username = $this->request->getParam('username', '');
+
+            $stmt = $this->db->prepare('SELECT gu.uid AS username, g.gid AS group_id
+            FROM oc_group_user gu JOIN oc_groups g ON gu.gid = g.gid WHERE gu.uid = ?;');
+
+             $result = $stmt->execute([$username]);
+
+            $rows = [];
+
+            while ($row = $result->fetch()) {
+                $rows[] = $row["group_id"];
+            }
+
+            return new DataResponse(['result' => $rows]);
+        } catch (\Exception $e) {
+            return new DataResponse([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
 }

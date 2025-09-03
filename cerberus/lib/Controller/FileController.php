@@ -75,6 +75,32 @@ class FileController extends Controller
         }
     }
 
+
+
+    //  query when an empty result comes back: 
+//     MariaDB [nextcloud]> SELECT 
+//     ->     f.fileid,
+//     ->     f.path,
+//     ->     s.id AS storage_id,
+//     ->     SUBSTRING_INDEX(s.id, '::', -1) AS owner_username,
+//     ->     u.displayname
+//     -> FROM 
+//     ->     oc_filecache f
+//     -> JOIN 
+//     ->     oc_storages s ON f.storage = s.numeric_id
+//     -> LEFT JOIN 
+//     ->     oc_users u ON u.uid = SUBSTRING_INDEX(s.id, '::', -1)
+//     -> WHERE 
+//     ->     f.path = 'files/Readme.md';
+// +--------+-----------------+-------------+----------------+-------------+
+// | fileid | path            | storage_id  | owner_username | displayname |
+// +--------+-----------------+-------------+----------------+-------------+
+// |      4 | files/Readme.md | home::root  | root           | NULL        |
+// |    129 | files/Readme.md | home::user1 | user1          | NULL        |
+// |    218 | files/Readme.md | home::user2 | user2          | NULL        |
+// +--------+-----------------+-------------+----------------+-------------+
+
+
     /**
      * @NoAdminRequired
      * @NoCSRFRequired

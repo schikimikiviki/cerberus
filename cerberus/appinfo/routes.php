@@ -35,6 +35,11 @@ return [
             'verb' => 'GET'
         ],
         [
+            'name' => 'user#getGroupsOfASpecificUser',
+            'url' => '/users/get-groups',
+            'verb' => 'GET'
+        ],
+        [
             'name' => 'file#getFile',
             'url' => '/permissions/file',
             'verb' => 'GET'

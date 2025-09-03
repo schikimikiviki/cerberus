@@ -67,6 +67,15 @@ and to fetch only the groups:
 curl -u admin:admin "http://localhost:8089/apps/cerberus/users/group-list"
 ```
 
+With the next command you can find out what groups a user is in: 
+```
+curl -u admin:admin "http://localhost:8089/apps/cerberus/users/get-groups?username=admin"
+```
+
+## Error handling
+
+You might get an "Access Denied" error. The curl of data is only enabled for the user "root". To change this, you can modify or deactivate this restriction in cerberus/lib/Controller/FileController.php etc.
+
 ## Usage - in a docker container
 
 0. Log in as sudo, otherwise the app might not be there on startup.
