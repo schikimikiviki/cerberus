@@ -48,6 +48,11 @@ return [
             'name' => 'file#getGroup',
             'url' => '/permissions/group',
             'verb' => 'GET'
+        ], 
+        [
+            'name' => 'file#getFileWhenNotShared',
+            'url' => '/permissions/file-unshared',
+            'verb' => 'GET'
         ]
     ]
 ];
