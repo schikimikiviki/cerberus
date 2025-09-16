@@ -101,13 +101,12 @@ class FileController extends Controller
         try {
             $path = $this->request->getParam('path', '');
 
-            $stmt = $this->db->prepare('SELECT  f.fileid, f.path, s.id 
-                                        AS storage_id, SUBSTRING_INDEX(s.id, '::', -1) 
-                                        AS owner_username, u.displayname 
-                                        FROM  oc_filecache f 
-                                        JOIN  oc_storages s ON f.storage = s.numeric_id 
-                                        LEFT JOIN oc_users u ON u.uid = SUBSTRING_INDEX(s.id, '::', -1) 
-                                        WHERE  f.path = ?;');
+             $stmt = $this->db->prepare("SELECT f.fileid, f.path, s.id AS storage_id, 
+                                        SUBSTRING_INDEX(s.id, '::', -1) AS owner_username, u.displayname
+                                        FROM oc_filecache f
+                                        JOIN oc_storages s ON f.storage = s.numeric_id
+                                        LEFT JOIN oc_users u ON u.uid = SUBSTRING_INDEX(s.id, '::', -1)
+                                        WHERE f.path = ?");
 
             $result = $stmt->execute([$path]);
 

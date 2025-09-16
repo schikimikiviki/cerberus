@@ -31,6 +31,12 @@ To test the first route, you need to "share" an image with somebody. In the next
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file?path=files/Nextcloud.png"
 ```
 
+For files that were not shared but exist within nextcloud, use: 
+
+```
+curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file-unshared?path=files/Nextcloud.png"
+```
+
 b) Group folders route
 
 The second route is for group access. You need to first create a group and add users to that group. You can do this in the nextcloud gui in your Profile in "Accounts". You can then also share files across that group.
