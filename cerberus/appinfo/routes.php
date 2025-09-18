@@ -50,6 +50,11 @@ return [
             'verb' => 'GET'
         ], 
         [
+            'name' => 'file#getGroupWithId',
+            'url' => '/permissions/group-id',
+            'verb' => 'GET'
+        ], 
+        [
             'name' => 'file#getFileWhenNotShared',
             'url' => '/permissions/file-unshared',
             'verb' => 'GET'

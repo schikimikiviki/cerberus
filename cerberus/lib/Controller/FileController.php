@@ -187,6 +187,64 @@ class FileController extends Controller
         }
     }
 
+     /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function getGroupWithId(): DataResponse
+    {
+
+
+        // only let admin fetch
+        $currentUser = $this->userSession->getUser();
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
+            return new DataResponse(['error' => 'Access denied'], 403);
+        }
+
+        // check if the table exists first
+        if (!$this->tableExists('oc_group_folders')) {
+            return new DataResponse(['result' => []]);
+        }
+
+
+        try {
+            $mount_point = $this->request->getParam('mount_point', '');
+
+            $stmt = $this->db->prepare("SELECT 
+        gf.folder_id,
+        gf.mount_point,
+        gfg.group_id,
+        gfg.permissions,
+        CASE WHEN gfg.permissions & 1 THEN 'Ja' ELSE 'Nein' END as Lesen,
+        CASE WHEN gfg.permissions & 2 THEN 'Ja' ELSE 'Nein' END as Schreiben,
+        CASE WHEN gfg.permissions & 4 THEN 'Ja' ELSE 'Nein' END as Erstellen,
+        CASE WHEN gfg.permissions & 8 THEN 'Ja' ELSE 'Nein' END as Loeschen,
+        CASE WHEN gfg.permissions & 16 THEN 'Ja' ELSE 'Nein' END as Teilen
+    FROM 
+        oc_group_folders gf
+    JOIN 
+        oc_group_folders_groups gfg ON gf.folder_id = gfg.folder_id
+    WHERE 
+        gf.folder_id = ?"); // here, we are checking based on the group id
+
+
+            $result = $stmt->execute([$mount_point]);
+
+            $rows = [];
+
+            while ($row = $result->fetch()) {
+                $rows[] = $row;
+            }
+
+            return new DataResponse(['result' => $rows]);
+        } catch (\Exception $e) {
+            return new DataResponse([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
+
 
     private function tableExists(string $tableName): bool
     {
