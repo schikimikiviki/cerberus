@@ -208,7 +208,7 @@ class FileController extends Controller
 
 
         try {
-            $mount_point = $this->request->getParam('mount_point', '');
+            $folder_id = $this->request->getParam('folder_id', '');
 
             $stmt = $this->db->prepare("SELECT 
         gf.folder_id,
@@ -228,7 +228,7 @@ class FileController extends Controller
         gf.folder_id = ?"); // here, we are checking based on the group id
 
 
-            $result = $stmt->execute([$mount_point]);
+            $result = $stmt->execute([$folder_id]);
 
             $rows = [];
 

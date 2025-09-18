@@ -56,7 +56,7 @@ curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group?mount
 You can also do the same request when you only have the groupfolder id: 
 
 ```
-curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group-id?mount_point=test"
+curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group-id?folder_id=1"
 ```
 
 Both requests will deliver the same result, when called accordingly. In nextcloud, a groupfolder always has an id. In the frontend, you will see the name of the groupfolder only , like "test", but on the nextcloud system itself, via terminal, when you check the folder, the name will not be visible, only the id: /data/nextcloud/data/__groupfolders/1
