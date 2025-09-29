@@ -111,7 +111,7 @@ class UserController extends Controller
     public function getGroupsOfASpecificUser(): DataResponse
     {
         $currentUser = $this->userSession->getUser();
-        if (!$currentUser || $currentUser->getUID() !== 'admin') {
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
             return new DataResponse(['error' => 'Access denied'], 403);
         }
 
