@@ -2,13 +2,13 @@
 
 namespace OCA\Cerberus\Controller;
 
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Controller;
-use OCP\IRequest;
-use OCP\Files\IRootFolder;
-use OCP\IUserSession;
 
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\Files\IRootFolder;
 use OCP\IDBConnection;
+use OCP\IRequest;
+use OCP\IUserSession;
 
 class FileController extends Controller
 {
@@ -17,7 +17,7 @@ class FileController extends Controller
     protected $userSession;
     protected $db;
 
-    public function __construct(string $AppName, IRequest $request, IRootFolder $rootFolder, IUserSession $userSession,  IDBConnection $db)
+    public function __construct(string $AppName, IRequest $request, IRootFolder $rootFolder, IUserSession $userSession, IDBConnection $db)
     {
         parent::__construct($AppName, $request);
         $this->request = $request;
@@ -75,6 +75,7 @@ class FileController extends Controller
         }
     }
 
+
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
@@ -88,20 +89,20 @@ class FileController extends Controller
             return new DataResponse(['error' => 'Access denied'], 403);
         }
 
-            //  query when a files was not shared before but exists
-            // the result will look something like this: 
-            // +--------+-----------------+-------------+----------------+-------------+
-            // | fileid | path            | storage_id  | owner_username | displayname |
-            // +--------+-----------------+-------------+----------------+-------------+
-            // |      4 | files/Readme.md | home::root  | root           | NULL        |
-            // |    129 | files/Readme.md | home::user1 | user1          | NULL        |
-            // |    218 | files/Readme.md | home::user2 | user2          | NULL        |
-            // +--------+-----------------+-------------+----------------+-------------+
+        //  query when a files was not shared before but exists
+        // the result will look something like this:
+        // +--------+-----------------+-------------+----------------+-------------+
+        // | fileid | path            | storage_id  | owner_username | displayname |
+        // +--------+-----------------+-------------+----------------+-------------+
+        // |      4 | files/Readme.md | home::root  | root           | NULL        |
+        // |    129 | files/Readme.md | home::user1 | user1          | NULL        |
+        // |    218 | files/Readme.md | home::user2 | user2          | NULL        |
+        // +--------+-----------------+-------------+----------------+-------------+
 
         try {
             $path = $this->request->getParam('path', '');
 
-             $stmt = $this->db->prepare("SELECT f.fileid, f.path, s.id AS storage_id, 
+            $stmt = $this->db->prepare("SELECT f.fileid, f.path, s.id AS storage_id, 
                                         SUBSTRING_INDEX(s.id, '::', -1) AS owner_username, u.displayname
                                         FROM oc_filecache f
                                         JOIN oc_storages s ON f.storage = s.numeric_id
@@ -124,8 +125,6 @@ class FileController extends Controller
             ], 500);
         }
     }
-
-
 
 
     /**
@@ -169,7 +168,6 @@ class FileController extends Controller
         gf.mount_point = ?");
 
 
-
             $result = $stmt->execute([$mount_point]);
 
             $rows = [];
@@ -187,7 +185,74 @@ class FileController extends Controller
         }
     }
 
-     /**
+    private function tableExists(string $tableName): bool
+    {
+        try {
+            // Different database types might need different queries
+            $platform = $this->db->getDatabasePlatform();
+
+
+            // MySQL/MariaDB
+            $sql = "SELECT TABLE_NAME 
+                FROM INFORMATION_SCHEMA.TABLES 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = ?";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$tableName]);
+
+            return (bool)$stmt->fetch();
+        } catch (\Exception $e) {
+            // Log error if needed
+            // error_log('Error checking table existence: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     */
+    public function getFileIDByName(): DataResponse
+    {
+
+        // only let admin fetch
+        $currentUser = $this->userSession->getUser();
+        if (!$currentUser || $currentUser->getUID() !== 'root') {
+            return new DataResponse(['error' => 'Access denied'], 403);
+        }
+
+        // check if the table exists first
+        if (!$this->tableExists('oc_filecache')) {
+            return new DataResponse(['result' => []]);
+        }
+
+// do this query: SELECT f.fileid FROM oc_filecache f JOIN oc_storages s ON f.storage = s.numeric_id WHERE f.path = 'files/Untitled.jpeg'   AND SUBSTRING_INDEX(s.id, '::', -1) = 'user1';
+        try {
+            $filePath = $this->request->getParam('path', '');
+            $userName = $this->request->getParam('username', '');
+
+            $stmt = $this->db->prepare("SELECT f.fileid FROM oc_filecache f JOIN oc_storages s ON f.storage = s.numeric_id WHERE f.path = ?   AND SUBSTRING_INDEX(s.id, '::', -1) = ?;");
+
+
+            $result = $stmt->execute([$filePath, $userName]);
+
+            $rows = [];
+
+            while ($row = $result->fetch()) {
+                $rows[] = $row;
+            }
+
+            return new DataResponse(['result' => $rows]);
+        } catch (\Exception $e) {
+            return new DataResponse([
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
+    }
+
+    /**
      * @NoAdminRequired
      * @NoCSRFRequired
      */
@@ -242,31 +307,6 @@ class FileController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ], 500);
-        }
-    }
-
-
-    private function tableExists(string $tableName): bool
-    {
-        try {
-            // Different database types might need different queries
-            $platform = $this->db->getDatabasePlatform();
-
-
-            // MySQL/MariaDB
-            $sql = "SELECT TABLE_NAME 
-                FROM INFORMATION_SCHEMA.TABLES 
-                WHERE TABLE_SCHEMA = DATABASE() 
-                AND TABLE_NAME = ?";
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([$tableName]);
-
-            return (bool) $stmt->fetch();
-        } catch (\Exception $e) {
-            // Log error if needed
-            // error_log('Error checking table existence: ' . $e->getMessage());
-            return false;
         }
     }
 }

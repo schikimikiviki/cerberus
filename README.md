@@ -4,7 +4,9 @@ Nextcloud plugin that alows to GET the file permissions and file ownerships for 
 
 ## Usage - general
 
-1. Start your own docker container or nextcloud instance. When using docker, you need to find the directory that nextcloud uses. It will be something like /srv/nextcloud/data/nextcloud/custom_apps - it is important that you clone the cerberus app to the "custom_apps" folder.
+1. Start your own docker container or nextcloud instance. When using docker, you need to find the directory that
+   nextcloud uses. It will be something like /srv/nextcloud/data/nextcloud/custom_apps - it is important that you clone
+   the cerberus app to the "custom_apps" folder.
 
 2. Once you cloned the repo, make sure it has the right permissions for www-data:
 
@@ -13,33 +15,45 @@ sudo chown -R www-data:www-data srv/nextcloud/data/nextcloud/custom_apps/cerberu
 sudo chmod -R 755 srv/nextcloud/data/nextcloud/custom_apps
 ```
 
-3. Important: The repo contains the a subfolder called "cerberus" - this is where the actual plugin is. You need to copy it to "custom_apps" folder.
+3. Important: The repo contains the a subfolder called "cerberus" - this is where the actual plugin is. You need to copy
+   it to "custom_apps" folder.
 
 ```
  cp -r cerberus/ ../
 ```
 
-After doing this, go to the nextcloud GUI and log in. Click on your profile in the upper right corner and on "Apps" and "Your apps". You should now see "enable" next to cerberus when you scroll down. Once its enabled, you will see a cloud icon in the upper bar. When you click on it, there is just a blue screen.
+After doing this, go to the nextcloud GUI and log in. Click on your profile in the upper right corner and on "Apps"
+and "Your apps". You should now see "enable" next to cerberus when you scroll down. Once its enabled, you will see a
+cloud icon in the upper bar. When you click on it, there is just a blue screen.
 
 4. Test routes:
 
 a) File permission route
 
-To test the first route, you need to "share" an image with somebody. In the nextcloud GUI, go to "Files", check a file and then click on the share icon. Share the file with somebody, now it appears in "Shares". You can now test the first curl:
+To test the first route, you need to "share" an image with somebody. In the nextcloud GUI, go to "Files", check a file
+and then click on the share icon. Share the file with somebody, now it appears in "Shares". You can now test the first
+curl:
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file?path=files/Nextcloud.png"
 ```
 
-For files that were not shared but exist within nextcloud, use: 
+For files that were not shared but exist within nextcloud, use:
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file-unshared?path=files/Nextcloud.png"
 ```
 
+To fetch the ID of a file, use:
+
+```
+curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file-id?path=files/Nextcloud.png&username=user1"
+```
+
 b) Group folders route
 
-The second route is for group access. You need to first create a group and add users to that group. You can do this in the nextcloud gui in your Profile in "Accounts". You can then also share files across that group.
+The second route is for group access. You need to first create a group and add users to that group. You can do this in
+the nextcloud gui in your Profile in "Accounts". You can then also share files across that group.
 
 Now, you need to enable the "group folders" extension in nextcloud. You can do this in the docker container with:
 
@@ -47,19 +61,22 @@ Now, you need to enable the "group folders" extension in nextcloud. You can do t
 php occ app:enable groupfolders
 ```
 
-Or alternatively via nextcloud gui. Then, click on your profile > Administration settings > Team folders and create a new folder "test". You can then add the group you created before. Then the second curl should be possible:
+Or alternatively via nextcloud gui. Then, click on your profile > Administration settings > Team folders and create a
+new folder "test". You can then add the group you created before. Then the second curl should be possible:
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group?mount_point=test"
 ```
 
-You can also do the same request when you only have the groupfolder id: 
+You can also do the same request when you only have the groupfolder id:
 
 ```
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/group-id?folder_id=1"
 ```
 
-Both requests will deliver the same result, when called accordingly. In nextcloud, a groupfolder always has an id. In the frontend, you will see the name of the groupfolder only , like "test", but on the nextcloud system itself, via terminal, when you check the folder, the name will not be visible, only the id: /data/nextcloud/data/__groupfolders/1
+Both requests will deliver the same result, when called accordingly. In nextcloud, a groupfolder always has an id. In
+the frontend, you will see the name of the groupfolder only , like "test", but on the nextcloud system itself, via
+terminal, when you check the folder, the name will not be visible, only the id: /data/nextcloud/data/__groupfolders/1
 
 c) Available users route
 
@@ -81,14 +98,16 @@ and to fetch only the groups:
 curl -u admin:admin "http://localhost:8089/apps/cerberus/users/group-list"
 ```
 
-With the next command you can find out what groups a user is in: 
+With the next command you can find out what groups a user is in:
+
 ```
 curl -u admin:admin "http://localhost:8089/apps/cerberus/users/get-groups?username=admin"
 ```
 
 ## Error handling
 
-You might get an "Access Denied" error. The curl of data is only enabled for the user "root". To change this, you can modify or deactivate this restriction in cerberus/lib/Controller/FileController.php etc.
+You might get an "Access Denied" error. The curl of data is only enabled for the user "root". To change this, you can
+modify or deactivate this restriction in cerberus/lib/Controller/FileController.php etc.
 
 ## Usage - in a docker container
 
@@ -132,7 +151,9 @@ sudo bash startup.sh
 
 3. You can access nextcloud at: http://localhost:8089/
 
-4. Before you can curl anything, you need to activate the app. Log in into nextcloud, click on your profile icon at the top right corner and select "Apps". Then, on the left side, select "your apps" and you should see "cerberus". Click on "enable":
+4. Before you can curl anything, you need to activate the app. Log in into nextcloud, click on your profile icon at the
+   top right corner and select "Apps". Then, on the left side, select "your apps" and you should see "cerberus". Click
+   on "enable":
 
 5. You can test curling messages:
 

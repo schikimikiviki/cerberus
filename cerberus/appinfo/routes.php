@@ -48,16 +48,23 @@ return [
             'name' => 'file#getGroup',
             'url' => '/permissions/group',
             'verb' => 'GET'
-        ], 
+        ],
         [
             'name' => 'file#getGroupWithId',
             'url' => '/permissions/group-id',
             'verb' => 'GET'
-        ], 
+        ],
         [
             'name' => 'file#getFileWhenNotShared',
             'url' => '/permissions/file-unshared',
             'verb' => 'GET'
+        ],
+        [
+            'name' => 'file#getFileIDByName',
+            'url' => '/permissions/file-id',
+            'verb' => 'GET'
         ]
+
+
     ]
 ];
