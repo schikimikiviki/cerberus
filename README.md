@@ -50,6 +50,15 @@ To fetch the ID of a file, use:
 curl -u admin:admin "http://localhost:8181/apps/cerberus/permissions/file-id?path=files/Nextcloud.png&username=user1"
 ```
 
+Use a path like "files/image.png" and the username of that file. The username param is there to make sure you are
+getting the correct ID. For example, when 2 users have a file with the same name, the username param will make sure that
+only the ID of the correct corresponding username is returned. You may also leave out this param.
+
+When fetching the id of a file within a groupfolder, keep in mind that the path needs to start with "__groupfolders",
+because files in groupfolders always look like this on the filesystem: __groupfolders/1/1710322553730.jpg . Also, leave
+out the username for a groupfolder file, as the groupfolder path already contains the ID of the group ("1" in this
+case).
+
 b) Group folders route
 
 The second route is for group access. You need to first create a group and add users to that group. You can do this in

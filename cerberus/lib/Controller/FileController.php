@@ -227,16 +227,29 @@ class FileController extends Controller
             return new DataResponse(['result' => []]);
         }
 
-// do this query: SELECT f.fileid FROM oc_filecache f JOIN oc_storages s ON f.storage = s.numeric_id WHERE f.path = 'files/Untitled.jpeg'   AND SUBSTRING_INDEX(s.id, '::', -1) = 'user1';
+        // do this query: SELECT f.fileid FROM oc_filecache f JOIN oc_storages s ON f.storage = s.numeric_id WHERE f.path = 'files/Untitled.jpeg'   AND SUBSTRING_INDEX(s.id, '::', -1) = 'user1';
+        // if no username is given, just leave out the check for the username
         try {
             $filePath = $this->request->getParam('path', '');
             $userName = $this->request->getParam('username', '');
 
-            $stmt = $this->db->prepare("SELECT f.fileid FROM oc_filecache f JOIN oc_storages s ON f.storage = s.numeric_id WHERE f.path = ?   AND SUBSTRING_INDEX(s.id, '::', -1) = ?;");
+            // Base query
+            $sql = "SELECT f.fileid 
+            FROM oc_filecache f 
+            JOIN oc_storages s ON f.storage = s.numeric_id 
+            WHERE f.path = ?";
 
+            $params = [$filePath];
 
-            $result = $stmt->execute([$filePath, $userName]);
+            // Add username filter if provided
+            if (!empty($userName)) {
+                $sql .= " AND SUBSTRING_INDEX(s.id, '::', -1) = ?";
+                $params[] = $userName;
+            }
 
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute($params);
+            
             $rows = [];
 
             while ($row = $result->fetch()) {
@@ -244,6 +257,8 @@ class FileController extends Controller
             }
 
             return new DataResponse(['result' => $rows]);
+
+
         } catch (\Exception $e) {
             return new DataResponse([
                 'error' => $e->getMessage(),
